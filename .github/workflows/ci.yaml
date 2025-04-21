@@ -1,0 +1,26 @@
+name: CI
+run-name: Integration continues and code analysis Pipeline
+on: 
+    push:
+        branches:
+              -main
+
+jobs:
+    CI:
+      name: Build and analyze
+      runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+              -Dsonar.projectKey=CI-site_test
+              -Dsonar.projectName=CI-site_test
+              -Dsonar.projectVersion=1.0
+              -Dsonar.sources=.
